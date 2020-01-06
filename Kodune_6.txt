@@ -1,0 +1,44 @@
+Kodune töö on tunnis alustatud iseseisva töö jätkuks.
+
+1) Kuna leht, millel saab sisse logida (näitab üht juhuslikku pilti ülikoolist ning semestri kulgemist) on nüüd eriline, ta jääb üheks, millel kasutajanimi pole teada, siis oleks mõistlik tema päis teha taas staatilise HTML koodi abil. Ehk siis asendage selle lehe osa, mis praegu lisatakse header.php poolt lihtsalt HTML koodiga (saate selle põhimõtteliselt kopeerida newuser.php failist).
+
+2) Lisage kasutajaprofiili loomise/salvestamise leht ja võtke kasutaja valitud värvid ka kasutusele.
+Põhimõtteliselt tuleb tekitada leht (soovitan nime userprofile.php), millel on vorm. Selle vormi kaudu saab sisestada ennast tutvustava teksti ning valida värvi tausta ja teksti jaoks. (Vormi kood on allpool olemas).
+Kasutaja valib värvid (loomulikult võite tegeleda ka kirjeldava tekstiga), need salvestatakse andmetabelisse. (Andmetabeli loomise SQL käsk on allpool olemas, määrake lihtsalt õige andmebaasi nimi).
+Salvestamisel antakse valitud värvid kohe ka sessioonimuutujate väärtusteks (näiteks: $_SESSION["bgColor"] ja $_SESSION["txtColor"]). Siis saab neid värve ka kohe hakata lehtedel kasutama (kus kasutaja on sisse loginud).
+
+Edaspidi, kui kasutaja sisse logib, siis loetakse sisselogimisel kohe ka kasutajaprofiili. Kui see on olemas (antud kasutaja id järgi saab profiilide andmebaasisit fetch käsuga midagi kätte), siis kasutatakse sessioonimuutujates kasutaja värve. Kui kasutajal profiili pole, siis kasutatakse valget tausta (#FFFFFF) ja musta teksti (#000000).
+
+NB! Praegu tasub profiili igale kasutajale salvestada vaid ühe korra, sest ilmselt hetkel Teie funktsioon ei muuda olemasolevat vaid lisab iga kord uue.
+
+Selleks: 
+a) Lisage uus andmetabel kasutajaprofiili jaoks:
+
+CREATE TABLE `andmebaas`.`vpuserprofiles` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `userid` INT(11) NOT NULL , `description` VARCHAR(2000) NULL , `bgcolor` VARCHAR(7) NULL , `txtcolor` VARCHAR(7) NULL , `picture` INT(11) NULL, PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+See sisaldab teksti ja tausta värvi, lühitutvustust ja profiilipildi valmisolekut. Teie salvestate praegu vaid värvid ja kui tahate, siis ka kirjeldava teksti. Andmetabelis tohib väljasid tühjaks jätta.
+
+Vorm kasutajaprofiili jaoks:
+
+<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+	  <label>Minu kirjeldus</label><br>
+	  <textarea rows="10" cols="80" name="description"><?php echo $mydescription; ?></textarea>
+	  <br>
+	  <label>Minu valitud taustavärv: </label><input name="bgcolor" type="color" value="<?php echo $mybgcolor; ?>"><br>
+	  <label>Minu valitud tekstivärv: </label><input name="txtcolor" type="color" value="<?php echo $mytxtcolor; ?>"><br>
+	  <input name="submitProfile" type="submit" value="Salvesta profiil">
+	</form>
+	
+
+Sisselogimisel tuleb lugeda ka profiili. Kui seda pole, siis tekstivärv #000000 ja taustavärv #FFFFFF
+
+Sisseloginud kasutajatel peab leht valitud värvidega olema. Selleks tuleb lehe <head> elemendi sisse lisada osa:
+
+<style>
+	body{background-color: #ffffff; 
+	color: #000000} 
+</style>
+
+Siin näites praegu värvid mus ja valge. Need tuleb php abil loomulikult kasutaja profiilist lisada.
+
+Edu!
