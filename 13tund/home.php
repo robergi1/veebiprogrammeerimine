@@ -2,6 +2,7 @@
   require("../../../config_vp2019.php");
   require("functions_main.php");
   require("functions_news.php");
+  require("functions_pic.php");
   //require("functions_user.php");
   $database = "if19_robert_no_1";
   
@@ -37,11 +38,36 @@
 	  //echo "ei mingeid küpsiseid: ";
   }
   
-  $newsHTML = latestNews(1000);
+  $photoDir = "../photos/";
+  $photoTypesAllowed = ["image/jpeg", "image/png"];
+  $newsHTML = latestNews(1);
   
   $userName = $_SESSION["userFirstname"] ." " .$_SESSION["userLastname"];
   
+  $photoList = [];
+	
+	$allFiles = array_slice(scandir($photoDir), 2);
+	foreach ($allFiles as $file){
+		$fileInfo = getimagesize($photoDir .$file);
+
+		if (in_array($fileInfo["mime"], $photoTypesAllowed) == true){
+			array_push($photoList, $file);
+		}
+	}
+	
+
+	$photoCount = count($photoList);
+	$randomImgHTML = "";
+	if ($photoCount > 0){
+	  $photoNum = mt_rand(0, $photoCount - 1);
+	  $randomImgHTML = '<img src="' .$photoDir .$photoList[$photoNum] .'" alt="Juhuslik foto">';
+	} else {
+		$randomImgHTML = "<p>Kahjuks pilte pole!</p>";
+	}
+	$latestPublicPictureHTML = latestPicture(1);
+  
   require("header.php");
+  
 ?>
 <body>
 <?php
@@ -51,17 +77,12 @@
   <hr>
   <p>Olete sisseloginud! Logi <a href="?logout=1">välja</a>!</p>
   <ul>
-    <li><a href="userprofile.php">Kasutajaprofiil</a></li>
-	<li><a href="messages.php">Sõnumid</a></li>
-	<li><a href="photoupload.php">piltide üleslaadimine</a></li>
-	<li><a href="addfilminfo.php">filmide üleslaadimine</a></li>
-	<li><a href="gallery.php">pildigalerii</a></li>
 	<li><a href="addnews.php">Uudise lisamine</a></li>
-	
+	<li><a href="change_news.php">Uudise muutmine</a></li>
   </ul>
   <hr size="3">
   <?php
-	echo $newsHTML;
+	echo $newsHTML, $latestPublicPictureHTML;
   ?>
   <hr size="3">
 

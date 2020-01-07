@@ -15,9 +15,9 @@ function addPicData($fileName, $altText, $privacy){
 	return $notice;
 }
 
-function showPics($privacy, $page, $limit){
+function showPics($limit){
 	$picHTML = null;
-	$skip = ($page - 1) * $limit;
+	//$skip = ($page - 1) * $limit;
 	
 	$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
 	//$stmt = $conn->prepare("SELECT filename, alttext FROM vpphotos WHERE privacy<=? AND deleted IS NULL");
